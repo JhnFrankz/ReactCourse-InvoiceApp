@@ -10,28 +10,31 @@ export const InvoiceApp = () => {
 
     const { id, name, client, company, items: itemsInitial, total } = getInvoice();
 
-    const [productValue, setProductValue] = useState('');
-    const [priceValue, setPriceValue] = useState('');
-    const [quantityValue, setQuantityValue] = useState('');
+    // Un solo estado para todos los inputs del formulario
+    const [formItemsState, setFormItemsState] = useState({
+        product: '',
+        price: '',
+        quantity: '',
+    });
+
+    const { product, price, quantity } = formItemsState;
 
     const [items, setItems] = useState(itemsInitial)
 
     const [counter, setCounter] = useState(4);
 
-    // Desestructuramos event para obtener el valor del input por el target
-    const onProductChange = ({ target }) => {
-        console.log(target.value);
-        setProductValue(target.value);
-    };
-
-    const onPriceChange = ({ target }) => {
-        console.log(target.value);
-        setPriceValue(target.value);
-    };
-
-    const onQuantityChange = ({ target }) => {
-        console.log(target.value);
-        setQuantityValue(target.value);
+    // Desestructuramos event, luego target para usar name y value
+    const onInputChange = ({ target: { name, value } }) => {
+        console.log(name);
+        console.log([name]);
+        console.log(value);
+        setFormItemsState({
+            // copiamos el estado anterior y le agregamos el nuevo estado
+            // es decir, si tenemos productValue: 'hola', priceValue: 'chau', quantityValue: 'adios' y escribimos en el input de producto 'hola' el estado queda productValue: 'hola', priceValue: 'chau', quantityValue: 'adios', productValue: 'hola'
+            ...formItemsState,
+            [name]: value
+            // [name] es la propiedad del objeto que queremos modificar, en este caso product, price o quantity
+        });
     };
 
     const onInvoiceItemsSubmit = (event) => {
@@ -40,31 +43,34 @@ export const InvoiceApp = () => {
         // hacemos una copia del array de items y le agregamos el nuevo item al final del array.
         // ponemos el key en 4 porque ya tenemos 3 items en el array y product: productValue, price: priceValue, quantity: quantityValue porque son los valores que tenemos en los estados.
 
-        if (productValue.trim().length <= 1) return;
-        if (priceValue.trim().length <= 1) return;
-        if (isNaN(priceValue.trim())) {
+        if (product.trim().length <= 1) return;
+        if (price.trim().length <= 1) return;
+        if (isNaN(price.trim())) {
             alert('Error, el precio no es un número');
             return;
         }
-        if (quantityValue.trim().length < 1) {
+        if (quantity.trim().length < 1) {
             alert('Error, la cantidad tiene que ser mayor a 0');
             return;
         }
-        if (isNaN(quantityValue.trim())) {
+        if (isNaN(quantity.trim())) {
             alert('Error, la cantidad no es un número');
             return;
         }
 
         setItems([...items, {
             id: counter,
-            product: productValue.trim(),
-            price: +priceValue.trim(),
-            quantity: parseInt(quantityValue.trim(), 10),
+            product: product.trim(),
+            price: +price.trim(),
+            quantity: parseInt(quantity.trim(), 10),
         }])
 
-        setProductValue('');
-        setPriceValue('');
-        setQuantityValue('');
+        setFormItemsState({
+            product: '',
+            price: '',
+            quantity: '',
+        });
+
         setCounter(counter + 1);
     };
 
@@ -97,22 +103,22 @@ export const InvoiceApp = () => {
                             <input
                                 type="text"
                                 name="product"
-                                value={productValue}
+                                value={product}
                                 placeholder="Producto"
                                 className="form-control m-3"
-                                onChange={onProductChange} />
+                                onChange={onInputChange} />
                             <input type="text"
                                 name="price"
-                                value={priceValue}
+                                value={price}
                                 placeholder="Precio"
                                 className="form-control m-3"
-                                onChange={event => onPriceChange(event)} />
+                                onChange={event => onInputChange(event)} />
                             <input type="text"
                                 name="quantity"
-                                value={quantityValue}
+                                value={quantity}
                                 placeholder="Cantidad"
                                 className="form-control m-3"
-                                onChange={onQuantityChange} />
+                                onChange={onInputChange} />
 
                             <button
                                 type="submit"

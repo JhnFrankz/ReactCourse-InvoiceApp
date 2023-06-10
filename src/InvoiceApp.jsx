@@ -4,13 +4,48 @@ import { CompanyView } from "./components/CompanyView";
 import { InvoiceView } from "./components/InvoiceView";
 import { ListItemsView } from "./components/ListItemsView";
 import { TotalView } from "./components/TotalView";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const invoiceInitial = {
+    id: 0,
+    name: '',
+    client: {
+        name: '',
+        lastName: '',
+        address: {
+            country: '',
+            city: '',
+            street: '',
+            number: 0,
+        },
+    },
+    company: {
+        name: '',
+        fiscalNumber: '',
+    },
+    items: [],
+};
 
 export const InvoiceApp = () => {
 
-    const { id, name, client, company, items: itemsInitial, total } = getInvoice();
+    // useState es un hook que nos permite agregar estado a los componentes funcionales, recibe un parámetro que es el valor inicial del estado y devuelve un array con dos elementos, el primero es el valor del estado y el segundo es una función que nos permite modificar el estado.
+    const [invoice, setInvoice] = useState(invoiceInitial);
 
-    // Un solo estado para todos los inputs del formulario
+    const [items, setItems] = useState([])
+
+    // useEffect es un hook que nos permite ejecutar código cuando el componente se monta, se desmonta o se actualiza. Recibe dos parámetros, el primero es una función que se ejecuta cuando el componente se monta, se desmonta o se actualiza, el segundo es un array de dependencias, si el array está vacío la función se ejecuta solo cuando el componente se monta, si el array tiene elementos la función se ejecuta cuando el componente se monta y cuando alguno de los elementos del array cambia de valor.
+    useEffect(() => {
+        const data = getInvoice();
+        // al ejecutar getInvoice() nos devuelve un objeto con los datos de la factura, lo guardamos en una constante y luego lo pasamos al estado con setInvoice
+        console.log(data);
+        setInvoice(data);
+        // también pasamos los items al estado porque los necesitamos para mostrarlos en el componente ListItemsView
+        setItems(data.items); 
+    }, [])
+
+    const { id, name, client, company, items: itemsInitial, total } = invoice;
+
+    // un solo estado para todos los inputs del formulario
     const [formItemsState, setFormItemsState] = useState({
         product: '',
         price: '',
@@ -19,21 +54,18 @@ export const InvoiceApp = () => {
 
     const { product, price, quantity } = formItemsState;
 
-    const [items, setItems] = useState(itemsInitial)
-
     const [counter, setCounter] = useState(4);
 
     // Desestructuramos event, luego target para usar name y value
     const onInputChange = ({ target: { name, value } }) => {
-        console.log(name);
-        console.log([name]);
-        console.log(value);
+        // console.log(name);
+        // console.log(value); 
         setFormItemsState({
             // copiamos el estado anterior y le agregamos el nuevo estado
             // es decir, si tenemos productValue: 'hola', priceValue: 'chau', quantityValue: 'adios' y escribimos en el input de producto 'hola' el estado queda productValue: 'hola', priceValue: 'chau', quantityValue: 'adios', productValue: 'hola'
             ...formItemsState,
             [name]: value
-            // [name] es la propiedad del objeto que queremos modificar, en este caso product, price o quantity
+            // [name] es la propiedad del objeto que queremos modificar, en este caso product, price o quantity (del name="" de html), las llaves son para que se interprete como una variable y no como un string
         });
     };
 

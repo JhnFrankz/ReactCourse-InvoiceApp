@@ -28,10 +28,23 @@ const invoiceInitial = {
 
 export const InvoiceApp = () => {
 
+    const [counter, setCounter] = useState(4);
+
     // useState es un hook que nos permite agregar estado a los componentes funcionales, recibe un parámetro que es el valor inicial del estado y devuelve un array con dos elementos, el primero es el valor del estado y el segundo es una función que nos permite modificar el estado.
     const [invoice, setInvoice] = useState(invoiceInitial);
 
     const [items, setItems] = useState([])
+
+    // un solo estado para todos los inputs del formulario
+    const [formItemsState, setFormItemsState] = useState({
+        product: '',
+        price: '',
+        quantity: '',
+    });
+
+    const { id, name, client, company, total } = invoice;
+
+    const { product, price, quantity } = formItemsState;
 
     // useEffect es un hook que nos permite ejecutar código cuando el componente se monta, se desmonta o se actualiza. Recibe dos parámetros, el primero es una función que se ejecuta cuando el componente se monta, se desmonta o se actualiza, el segundo es un array de dependencias, si el array está vacío la función se ejecuta solo cuando el componente se monta, si el array tiene elementos la función se ejecuta cuando el componente se monta y cuando alguno de los elementos del array cambia de valor.
     useEffect(() => {
@@ -41,20 +54,23 @@ export const InvoiceApp = () => {
         setInvoice(data);
         // también pasamos los items al estado porque los necesitamos para mostrarlos en el componente ListItemsView
         setItems(data.items); 
-    }, [])
+    }, []);
 
-    const { id, name, client, company, items: itemsInitial, total } = invoice;
+    useEffect(() => {
+        // console.log('El precio cambió');
+    }, [price]);
 
-    // un solo estado para todos los inputs del formulario
-    const [formItemsState, setFormItemsState] = useState({
-        product: '',
-        price: '',
-        quantity: '',
-    });
+    useEffect(() => {
+        // console.log('El formItemsState cambió');
+    }, [formItemsState]);
 
-    const { product, price, quantity } = formItemsState;
+    useEffect(() => {
+        // console.log('El counter cambió');
+    }, [counter]);
 
-    const [counter, setCounter] = useState(4);
+    useEffect(() => {
+        console.log('Los items cambiaron');
+    }, [items]);
 
     // Desestructuramos event, luego target para usar name y value
     const onInputChange = ({ target: { name, value } }) => {

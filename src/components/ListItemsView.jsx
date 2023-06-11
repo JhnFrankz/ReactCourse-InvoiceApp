@@ -1,7 +1,7 @@
 import { RowItemView } from "./RowItemView";
 import PropTypes from 'prop-types';
 
-export const ListItemsView = ({ title, items }) => {
+export const ListItemsView = ({ title, items, handlerDeleteItem }) => {
 
     return (
         <>
@@ -12,12 +12,19 @@ export const ListItemsView = ({ title, items }) => {
                         <th>Producto</th>
                         <th>Precio</th>
                         <th>Cantidad</th>
+                        <th>Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>
                     {items.map(({ id, product, price, quantity }) => (
                         // key={id} es para que React sepa que cada elemento es único y no se repite.
-                        <RowItemView key={id} product={product} price={price} quantity={quantity} />
+                        <RowItemView
+                            key={id}
+                            id={id}
+                            product={product}
+                            price={price}
+                            quantity={quantity} 
+                            handlerDeleteItem={id => handlerDeleteItem(id)} />
                         // no poner ; luego de la llave de la función map
                         // ya que da un Warning en la consola del navegador.
                     ))}

@@ -1,4 +1,4 @@
-import { getInvoice } from "./services/getInvoice";
+import { getInvoice, calculateTotal } from "./services/getInvoice";
 import { ClientView } from "./components/ClientView";
 import { CompanyView } from "./components/CompanyView";
 import { InvoiceView } from "./components/InvoiceView";
@@ -28,6 +28,7 @@ const invoiceInitial = {
 
 export const InvoiceApp = () => {
 
+    const [total, setTotal] = useState(0);
     const [counter, setCounter] = useState(4);
 
     // useState es un hook que nos permite agregar estado a los componentes funcionales, recibe un parámetro que es el valor inicial del estado y devuelve un array con dos elementos, el primero es el valor del estado y el segundo es una función que nos permite modificar el estado.
@@ -42,7 +43,7 @@ export const InvoiceApp = () => {
         quantity: '',
     });
 
-    const { id, name, client, company, total } = invoice;
+    const { id, name, client, company } = invoice;
 
     const { product, price, quantity } = formItemsState;
 
@@ -69,7 +70,8 @@ export const InvoiceApp = () => {
     }, [counter]);
 
     useEffect(() => {
-        console.log('Los items cambiaron');
+        // console.log('Los items cambiaron');
+        setTotal(calculateTotal(items));
     }, [items]);
 
     // Desestructuramos event, luego target para usar name y value

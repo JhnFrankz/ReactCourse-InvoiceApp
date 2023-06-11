@@ -8,11 +8,15 @@ export const getInvoice = () => {
         total += item.price * item.quantity;
     }); */
 
-    const total = invoice.items
-        .map(item => item.price * item.quantity)
-        .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const total = calculateTotal(invoice.items);
 
     // retornamos un nuevo objeto con la propiedad total agregada
     // total: total es redundante, por lo que se puede simplificar a total
     return { ...invoice, total };
+};
+
+export const calculateTotal = (items = []) => {
+    return items
+        .map(item => item.price * item.quantity)
+        .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 };

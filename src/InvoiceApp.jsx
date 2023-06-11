@@ -29,6 +29,7 @@ const invoiceInitial = {
 
 export const InvoiceApp = () => {
 
+    const [activeForm, setActiveForm] = useState(false);
     const [total, setTotal] = useState(0);
     const [counter, setCounter] = useState(4);
     // useState es un hook que nos permite agregar estado a los componentes funcionales, recibe un parámetro que es el valor inicial del estado y devuelve un array con dos elementos, el primero es el valor del estado y el segundo es una función que nos permite modificar el estado.
@@ -64,6 +65,10 @@ export const InvoiceApp = () => {
         setCounter(counter + 1);
     };
 
+    const onActiveForm = () => {
+        setActiveForm(!activeForm);
+    };
+
     return (
         <>
             <div className="container">
@@ -87,7 +92,12 @@ export const InvoiceApp = () => {
 
                         <ListItemsView title={"Productos de la factura"} items={items} />
                         <TotalView total={total} />
-                        <FormItemsView handler={handlerAddItems} />
+                        <button
+                            className="btn btn-secondary"
+                            onClick={onActiveForm}>{!activeForm ? 'Agregar Item' : 'Cerrar Form'}</button>
+                        {!activeForm || <FormItemsView handler={handlerAddItems} />
+                        // si la expresión de la izquierda es true, se ejecuta la expresión de la derecha, si la expresión de la izquierda es false, no se ejecuta la expresión de la derecha
+                        }
                     </div>
                 </div>
             </div>
